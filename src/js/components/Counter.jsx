@@ -1,13 +1,18 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
-const Counter = ({ totalSeconds }) => {
+const Counter = () => {
 
-    const [seconds, setSeconds] = useState(55);
-    const [minutes, setMinutes] = useState(59);
+    const [seconds, setSeconds] = useState(0);
+    const [minutes, setMinutes] = useState(0);
     const [hours, setHours] = useState(0);
     const [isActive, setIsActive] = useState(false);
     const [isCountdown, setIsCountdown] = useState(false);
+    const [alertTime, setAlertTime] = useState(""); 
+
+    useEffect(() => {
+        setIsActive(true);
+    }, []);
 
     useEffect(() => {
         const interval = isActive ?
@@ -51,6 +56,13 @@ const Counter = ({ totalSeconds }) => {
         return () => clearInterval(interval);
     }, [isActive, isCountdown, seconds, minutes, hours]);
 
+    useEffect(() => {
+        const totalTimeInSeconds = hours * 3600 + minutes * 60 + seconds;
+        if (totalTimeInSeconds === alertTime) {
+            alert(`Tiempo alcanzado: ${alertTime} segundos`);
+        }
+    }, [seconds, minutes, hours, alertTime]);
+
     const startCounter = () => {
         setIsCountdown(false);
         setIsActive(true);
@@ -81,6 +93,15 @@ const Counter = ({ totalSeconds }) => {
             <button onClick={startCountdown}>Start Countdown</button>
             <button onClick={stop}>Stop</button>
             <button onClick={restart}>Restart</button>
+            <div>
+                <label htmlFor="alertTime">Seleccione tiempo hasta alerta: </label>
+                <input
+                    type="number"
+                    id="alertTime"
+                    value={alertTime}
+                    onChange={(e) => setAlertTime(Number(e.target.value))}
+                />
+            </div>
         </div>
     );
 };

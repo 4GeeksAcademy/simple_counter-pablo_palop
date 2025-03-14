@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
-const Countdown = ({ totalSeconds }) => {
+const Countdown = () => {
 
-    const [seconds, setSeconds] = useState(5);
-    const [minutes, setMinutes] = useState(59);
+    const [seconds, setSeconds] = useState(1);
+    const [minutes, setMinutes] = useState(0);
     const [hours, setHours] = useState(0);
     const [isActive, setIsActive] = useState(false);
-    const [inputHours, setInputHours] = useState(0);
-    const [inputMinutes, setInputMinutes] = useState(0);
-    const [inputSeconds, setInputSeconds] = useState(0);
+    const [inputHours, setInputHours] = useState("");
+    const [inputMinutes, setInputMinutes] = useState("");
+    const [inputSeconds, setInputSeconds] = useState("");
 
     useEffect(() => {
         const interval = isActive
@@ -35,10 +35,17 @@ const Countdown = ({ totalSeconds }) => {
         return () => clearInterval(interval);
     }, [isActive]);
 
+    useEffect(() => {
+            const totalTimeInSeconds = hours * 3600 + minutes * 60 + seconds;
+            if (totalTimeInSeconds === 0) {
+                alert(`Se acabó el tiempo`);
+            }
+        }, [seconds, minutes, hours]);
+
     const start = () => {
-        setHours();
-        setMinutes();
-        setSeconds();
+        setHours(parseInt(inputHours, 10) || 0);
+        setMinutes(parseInt(inputMinutes, 10) || 0);
+        setSeconds(parseInt(inputSeconds, 10) || 0);
         setIsActive(true);
     };
 
@@ -48,9 +55,9 @@ const Countdown = ({ totalSeconds }) => {
 
     const restart = () => {
         setIsActive(false);
-        setSeconds();
-        setMinutes();
-        setHours();
+        setSeconds(0);
+        setMinutes(0);
+        setHours(0);
     };
 
     return (
@@ -58,11 +65,26 @@ const Countdown = ({ totalSeconds }) => {
             <div className="card-body">
                 <div className='d-flex justify-content-center'>
                     <label className='d-flex m-2'>Horas:</label>
-                    <input type="text" placeholder='HH' value={inputHours} onChange={(e) => setInputHours(e.target.value)} />
+                    <input 
+                        type="text" 
+                        placeholder='HH' 
+                        value={inputHours} 
+                        onChange={(e) => setInputHours(e.target.value)} 
+                    />
                     <label className='d-flex m-2'>Minutos:</label>
-                    <input type="text" placeholder='MM' value={inputMinutes} onChange={(e) => setInputMinutes(e.target.value)} />
+                    <input 
+                        type="text" 
+                        placeholder='MM' 
+                        value={inputMinutes} 
+                        onChange={(e) => setInputMinutes(e.target.value)} 
+                    />
                     <label className='d-flex m-2'>Segundos:</label>
-                    <input type="text" placeholder='SS' value={inputSeconds} onChange={(e) => setInputSeconds(e.target.value)} />
+                    <input 
+                        type="text" 
+                        placeholder='SS' 
+                        value={inputSeconds} 
+                        onChange={(e) => setInputSeconds(e.target.value)} 
+                    />
                 </div>
                 <div>
                     {hours < 10 ? `0${hours}` : hours}:{minutes < 10 ? `0${minutes}` : minutes}:{seconds < 10 ? `0${seconds}` : seconds}
